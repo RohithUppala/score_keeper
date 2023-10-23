@@ -7,7 +7,7 @@
       <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   </head>
 
-  <body style="background-color: blueviolet;">
+  <body style="background-color: lightblue">
     <div id="root" style="text-align: center;"></div>
 
    
@@ -17,28 +17,98 @@
 
 let runs=0;
 let wickets=0;
+let scoreHolder = [];
+let hit ;
+let inputRef = React.createRef();
+
 function clickScore(num){
-  runs+=num;
+  //   if(wickets<10){
+  // runs+=num;
+  // scoreHolder.push(num);
+  hit = num;
   rootElement.render(<><ScoreBoard /> </>);
-}
+    }
+// }
 
 function clickWicket(){
-wickets+=1;
+//     if(wickets<10){
+      
+// wickets+=1;
+// scoreHolder.push("W");
+
+hit="Wicket"
+rootElement.render(<><ScoreBoard /> </>);
+    }
+// }
+
+const ScoreButtons= ()=>(
+                <div>
+                    <button onClick={()=>clickScore(0)}>0</button>&nbsp;
+                    <button onClick={()=>clickScore(1)}>1</button>&nbsp;
+                    <button onClick={()=>clickScore(2)}>2</button>&nbsp;
+                    <button onClick={()=>clickScore(3)}>3</button>&nbsp;
+                    <button onClick={()=>clickScore(4)}>4</button>&nbsp;
+                    <button onClick={()=>clickScore(5)}>5</button>&nbsp;
+                    <button onClick={()=>clickScore(6)}>6</button>&nbsp;
+                    <button onClick={clickWicket}>Wicket</button>&nbsp;
+                </div>
+)
+
+const BallWiseScore = () =>(
+    <div>
+      
+    {scoreHolder.map((score,index)=>(
+<>
+      {index % 6=== 0 && <br/>}
+        <span key={index}>{ score===0 ? <strong>.</strong>:score}</span>&nbsp;&nbsp;&nbsp;</>)
+    )
+    }
+    </div>
+)
+
+function handleSubmit(event){
+  event.preventDefault();
+
+  if(hit== "Wicket"){
+    wickets += 1;
+
+  }else{
+    runs += hit;
+  }
+
+  scoreHolder.unshift(
+   // <span>{hit}{","}{inputRef.current.value}</span>
+   <span>{`${hit}, ${inputRef.current.value}`}</span>
+   );
+    hit=0;
+   inputRef.current.value='';
 rootElement.render(<><ScoreBoard /> </>);
 }
+
+const Commentry = () => (
+<>
+<form onSubmit={handleSubmit}>
+<br/>
+<input value={hit}/>&nbsp;
+<input ref={inputRef} placeholder="Enter the comment"/>&nbsp;
+<button>Submit</button>
+</form>
+</>
+
+
+)
 const ScoreBoard = ()=>(
                   <>
                   <h1>SCORE KEEPER</h1>
                   <h2>SCORE: {runs}/{wickets}</h2>
-                  <div>
-                    <button onClick={()=>clickScore(1)}>1</button>
-                    <button onClick={()=>clickScore(2)}>2</button>
-                    <button onClick={()=>clickScore(3)}>3</button>
-                    <button onClick={()=>clickScore(4)}>4</button>
-                    <button onClick={()=>clickScore(5)}>5</button>
-                    <button onClick={()=>clickScore(6)}>6</button>
-                    <button onClick={clickWicket}>Wicket</button>
-                    </div>
+                  <ScoreButtons />
+                  <Commentry />
+                  <hr/>
+                  {scoreHolder.map((res,index )=> (
+                    <p key={index}>{res}</p>
+
+                    ))}
+                    
                     </>
 
 
